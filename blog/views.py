@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.views import View
 from django.views.generic import TemplateView, ListView
 
 from blog.forms import LoginForm, UserRegistrationForm, PostCreateForm, PostUpdateForm
@@ -34,16 +35,28 @@ class PostDetailView(TemplateView):
     template_name = "blog/post_detail.html"
 
 
-def home_page(request):
-    if request.user.is_authenticated:
-        posts = Post.objects.exclude(author=request.user).filter(is_active=True).order_by("published")
-    else:
-        posts = Post.objects.all().filter(is_active=True).order_by("published")
-    size = request.GET.get("size", 4)
-    page = request.GET.get("page", 1)
-    paginator = Paginator(posts, size)
-    page_obj = paginator.page(page)
-    return render(request, "blog/home.html", context={"page_obj": page_obj, "num_pages": paginator.num_pages})
+# def home_page(request):
+#     if request.user.is_authenticated:
+#         posts = Post.objects.exclude(author=request.user).filter(is_active=True).order_by("published")
+#     else:
+#         posts = Post.objects.all().filter(is_active=True).order_by("published")
+#     size = request.GET.get("size", 4)
+#     page = request.GET.get("page", 1)
+#     paginator = Paginator(posts, size)
+#     page_obj = paginator.page(page)
+#     return render(request, "blog/home.html", context={"page_obj": page_obj, "num_pages": paginator.num_pages})
+
+class home_page(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            posts = Post.objects.exclude(author = request.user).filter(is_active =True).order_by("published")
+        else:
+            posts = Post.objects.all().filter(is_active = True).order_by("published")
+        size = request.GET.get("size", 4)
+        page = request.GET.get("page", 1)
+        paginator = Paginator(posts, size)
+        page_obj = paginator.page(page)
+        return render(request, "blog/home.html", context = {"page_obj": page_obj, "num_pages": paginator.num_pages})
 
 
 def post_detail(request, pk):

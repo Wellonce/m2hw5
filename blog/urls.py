@@ -5,7 +5,7 @@ from blog.views import HomePageView, AboutView, NewPostView, UserPostView, PostD
 
 app_name = 'blog'
 urlpatterns = [
-    path('', home_page, name="home-page"),
+    path('', home_page.as_view(), name="home-page"),
     path('login/', login_view, name="login-page"),
     path('register/', register_view, name="register-page"),
     path('logout/', logout_view, name="logout"),

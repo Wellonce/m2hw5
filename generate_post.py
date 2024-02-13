@@ -11,9 +11,10 @@ def main():
         for j in range(random.randint(1, 10)):
             user = User.objects.get(id=random.choice([1, 2, 3, 5, 6]))
             post = Post.objects.create(author=user, title=faker.company(), content=faker.text(),
-                                       published=datetime.now().strftime("%Y-%d-%m"), is_active=True)
+                                       published=datetime.now(), is_active=True)
             post.save()
 
+# .strftime("%Y-%d-%m")
 
 if __name__ == '__main__':
     import os

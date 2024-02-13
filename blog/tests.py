@@ -1,9 +1,10 @@
 import datetime
 
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
 from blog.models import User, Post
+from .views import home_page
 
 
 class PostTestCase(TestCase):
@@ -25,7 +26,7 @@ class PostTestCase(TestCase):
         post = Post.objects.create(title="Post1",
                                    content="Content1",
                                    author=self.user,
-                                   published=datetime.datetime.now().date().strftime("%Y-%d-%m"),
+                                #    published=datetime.datetime.now().date().strftime("%Y-%d-%m"),
                                    is_active=True
                                    )
         self.post = post
@@ -50,3 +51,11 @@ class PostTestCase(TestCase):
         self.assertContains(response, "No Post")
 
     # def test_home_post_list(self):
+        
+        def test_pagination(self):
+            request = self.factory.get('/home/?size=2&page=1')
+            response = home_page.as_view()(request)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue('page_obj' in response.context_data)
+            self.assertTrue('num_pages' in response.context_data)
+            self.assertEqual(response.context_data['page_obj'].paginator.per_page, 2)
